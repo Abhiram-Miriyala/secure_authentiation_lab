@@ -1,0 +1,41 @@
+# Python Bytecode & Compilation Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+bin/
+include/
+lib/
+lib64/
+
+# Sensitive Configuration & Environment Variables
+.env
+.env.local
+.env.*.local
+
+# SQLite Database & Storage
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Pytest & Coverage Artefacts
+.pytest_cache/
+.coverage
+htmlcov/
+junit.xml
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db

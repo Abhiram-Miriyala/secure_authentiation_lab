@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Defensive Authentication Architecture{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="row align-items-center py-5">
+        <div class="col-lg-7">
+            <span class="badge cyber-badge py-2 px-3 text-cyan mb-3">
+                <i class="bi bi-shield-shaded me-1"></i> Defensive Security Engineering
+            </span>
+            <h1 class="display-5 fw-bold text-light mb-3">
+                Secure Authentication <span class="text-cyan text-glow">Lab</span>
+            </h1>
+            <p class="lead text-secondary mb-4">
+                A purpose-built reference implementation demonstrating core defensive authentication controls:
+                <strong>Argon2id</strong> password hashing, <strong>generic error responses</strong> with timing-attack mitigation, 
+                <strong>session fixation countermeasures</strong>, <strong>rate limiting</strong>, and <strong>parameterized queries</strong>.
+            </p>
+            <div class="d-flex flex-wrap gap-3">
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-cyan px-4 py-2">
+                        <i class="bi bi-speedometer2 me-1"></i> Open User Dashboard
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-cyan px-4 py-2">
+                        <i class="bi bi-person-plus-fill me-1"></i> Create Secure Account
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-cyan px-4 py-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Authenticate
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('main.security_info') }}" class="btn btn-outline-secondary px-4 py-2">
+                    <i class="bi bi-journal-code me-1"></i> View Security Specs
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mt-5 mt-lg-0">
+            <div class="cyber-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-secondary small fw-bold">ACTIVE DEFENSE MATRIX</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                        <i class="bi bi-circle-fill fs-6 me-1"></i> ENFORCED
+                    </span>
+                </div>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                    <li class="d-flex align-items-start gap-3">
+                        <i class="bi bi-cpu-fill text-cyan fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-semibold text-light">Argon2id Password Storage</div>
+                            <small class="text-secondary">64MB RAM memory-hard cost, 3 iterations, 4 parallel threads</small>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <i class="bi bi-hourglass-split text-cyan fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-semibold text-light">Timing Attack Equalization</div>
+                            <small class="text-secondary">Dummy hashing execution prevents account enumeration</small>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <i class="bi bi-speedometer text-cyan fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-semibold text-light">Rate Limiting Protection</div>
+                            <small class="text-secondary">5 login attempts/minute per IP; returns HTTP 429</small>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <i class="bi bi-cookie text-cyan fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-semibold text-light">Hardened Session Cookies</div>
+                            <small class="text-secondary">HttpOnly, SameSite=Lax, Secure flags, anti-fixation regeneration</small>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <i class="bi bi-database-lock text-cyan fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-semibold text-light">Parameterized SQL Engine</div>
+                            <small class="text-secondary">Strict input parameter binding immune to SQL injection</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Controls Grid -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="cyber-card p-4 h-100">
+                <div class="text-cyan fs-3 mb-2"><i class="bi bi-shield-shaded"></i></div>
+                <h5 class="fw-bold text-light">1. Credential Security</h5>
+                <p class="text-secondary small">
+                    Argon2id hashing is configured with salt generation and memory hardness. Plaintext passwords are never persisted to disk, memory dumps, or log files.
+                </p>
+                <div class="cyber-code">hasher.hash(password)<br># Output: $argon2id$v=19$m=65536...</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="cyber-card p-4 h-100">
+                <div class="text-cyan fs-3 mb-2"><i class="bi bi-eye-slash-fill"></i></div>
+                <h5 class="fw-bold text-light">2. Generic Error Responses</h5>
+                <p class="text-secondary small">
+                    Authentication failure returns an identical error message whether the username exists or not. Nonexistent lookups run constant-time dummy verification.
+                </p>
+                <div class="cyber-code">"Invalid username or password."<br># HTTP Status: 401 Unauthorized</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="cyber-card p-4 h-100">
+                <div class="text-cyan fs-3 mb-2"><i class="bi bi-stopwatch-fill"></i></div>
+                <h5 class="fw-bold text-light">3. Abuse & Brute-Force Defense</h5>
+                <p class="text-secondary small">
+                    Flask-Limiter intercepts automated credential stuffing attacks, triggering an HTTP 429 Too Many Requests response once threshold is breached.
+                </p>
+                <div class="cyber-code">@limiter.limit("5 per minute")<br># HTTP Status: 429 Too Many Requests</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

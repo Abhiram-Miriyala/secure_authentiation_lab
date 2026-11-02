@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}User Authentication{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="cyber-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex p-3 rounded-circle bg-dark-subtle border border-primary-subtle text-cyan fs-3 mb-2">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </div>
+                    <h3 class="fw-bold text-light">Authenticate</h3>
+                    <p class="text-secondary small">Protected by Rate Limiting and Generic Error Obfuscation</p>
+                </div>
+
+                <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-shield-exclamation text-info fs-5"></i>
+                    <div>
+                        <strong>Defensive Control:</strong> Rate-limited to 5 attempts/minute per IP to mitigate credential stuffing.
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}" novalidate>
+                    <!-- CSRF Protection Token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        <label for="login-username" class="form-label text-light small fw-bold">
+                            <i class="bi bi-person me-1 text-cyan"></i> Username
+                        </label>
+                        <input type="text" 
+                               class="form-control cyber-input" 
+                               id="login-username" 
+                               name="username" 
+                               value="{{ username or '' }}"
+                               placeholder="Enter your username" 
+                               required 
+                               autocomplete="username" 
+                               autofocus>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <label for="login-password" class="form-label text-light small fw-bold">
+                            <i class="bi bi-key me-1 text-cyan"></i> Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" 
+                                   class="form-control cyber-input" 
+                                   id="login-password" 
+                                   name="password" 
+                                   placeholder="Enter your password" 
+                                   required 
+                                   autocomplete="current-password">
+                            <button class="btn btn-outline-secondary toggle-password-btn" 
+                                    type="button" 
+                                    data-target="login-password"
+                                    aria-label="Toggle password visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-cyan w-100 py-2 fw-bold">
+                        <i class="bi bi-unlock-fill me-1"></i> Authenticate &amp; Establish Session
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <span class="text-secondary small">Need an account?</span>
+                    <a href="{{ url_for('auth.register') }}" class="text-cyan small fw-bold text-decoration-none ms-1">
+                        Register here
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

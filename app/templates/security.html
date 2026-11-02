@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Security Architecture &amp; Controls{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <span class="badge cyber-badge py-2 px-3 text-cyan mb-2">
+            <i class="bi bi-shield-check me-1"></i> Technical Reference
+        </span>
+        <h2 class="display-6 fw-bold text-light">Defensive Security Controls Architecture</h2>
+        <p class="text-secondary col-lg-8 mx-auto">
+            Comprehensive breakdown of the defensive patterns, cryptographic specifications, 
+            and architectural controls implemented in the Secure Authentication Lab.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Control 1: Argon2id Hashing -->
+        <div class="col-lg-6">
+            <div class="cyber-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-2 rounded bg-dark-subtle border border-primary-subtle text-cyan fs-4">
+                        <i class="bi bi-cpu-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-light mb-0">1. Argon2id Password Hashing</h5>
+                        <small class="text-secondary">Password Hashing Competition (PHC) Winner</small>
+                    </div>
+                </div>
+                <p class="text-secondary small">
+                    Unlike legacy hashes (MD5, SHA-256) which are fast and trivial to crack on GPUs, <strong>Argon2id</strong> is intentionally <em>memory-hard</em>. It resists both side-channel cache timing attacks (inherited from Argon2i) and massively parallel GPU/ASIC cracking (inherited from Argon2d).
+                </p>
+                <div class="table-responsive small">
+                    <table class="table table-dark table-sm table-bordered border-secondary-subtle">
+                        <thead>
+                            <tr class="text-cyan">
+                                <th>Algorithm</th>
+                                <th>Memory-Hard?</th>
+                                <th>GPU Resistance</th>
+                                <th>Side-Channel Resistance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MD5 / SHA-256</td>
+                                <td class="text-danger">No (0 KB)</td>
+                                <td class="text-danger">None (Billions/sec)</td>
+                                <td class="text-danger">None</td>
+                            </tr>
+                            <tr>
+                                <td>Bcrypt</td>
+                                <td class="text-warning">4 KB</td>
+                                <td class="text-warning">Moderate</td>
+                                <td class="text-success">Good</td>
+                            </tr>
+                            <tr class="table-primary border-primary">
+                                <td class="fw-bold">Argon2id</td>
+                                <td class="text-success fw-bold">64 MB (65536 KiB)</td>
+                                <td class="text-success fw-bold">High (ASIC Proof)</td>
+                                <td class="text-success fw-bold">High (Data-independent)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control 2: Timing Attacks & Generic Errors -->
+        <div class="col-lg-6">
+            <div class="cyber-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-2 rounded bg-dark-subtle border border-primary-subtle text-cyan fs-4">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-light mb-0">2. Timing Attack Mitigation</h5>
+                        <small class="text-secondary">Constant-Time Dummy Verification</small>
+                    </div>
+                </div>
+                <p class="text-secondary small">
+                    If an application immediately rejects a non-existent username in 2ms, but computes an Argon2id verification for a real user in 80ms, attackers can infer valid usernames using high-precision statistical timing attacks.
+                </p>
+                <div class="p-3 bg-dark-subtle rounded border border-primary-subtle small text-light mb-2">
+                    <strong>Our Defense:</strong> When a username does not exist in the database, the server executes <code>hasher.verify(DUMMY_HASH, password)</code> behind the scenes. Both valid and invalid user lookups consume approximately equal computation cycles.
+                </div>
+                <div class="cyber-code">
+if user is None:
+    dummy_verify(password)  # Equalize execution timing
+    return GENERIC_LOGIN_ERROR, 401
+                </div>
+            </div>
+        </div>
+
+        <!-- Control 3: Secure Session Management -->
+        <div class="col-lg-6">
+            <div class="cyber-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-2 rounded bg-dark-subtle border border-primary-subtle text-cyan fs-4">
+                        <i class="bi bi-cookie"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-light mb-0">3. Session Hardening &amp; Fixation</h5>
+                        <small class="text-secondary">Cookie Flags &amp; Lifecycle Controls</small>
+                    </div>
+                </div>
+                <ul class="list-unstyled small text-secondary d-flex flex-column gap-2 mb-0">
+                    <li>
+                        <strong class="text-light">HttpOnly:</strong> Blocks JavaScript access via <code>document.cookie</code>, preventing cookie theft in case of Cross-Site Scripting (XSS).
+                    </li>
+                    <li>
+                        <strong class="text-light">SameSite=Lax:</strong> Withholds cookies during cross-site requests, mitigating Cross-Site Request Forgery (CSRF).
+                    </li>
+                    <li>
+                        <strong class="text-light">Session Fixation Countermeasure:</strong> When authenticating, <code>session.clear()</code> wipes pre-login session states, forcing the browser to adopt a freshly signed cryptographic session identifier.
+                    </li>
+                    <li>
+                        <strong class="text-light">Inactivity Expiration:</strong> The server tracks <code>session['last_active']</code> and forces re-authentication after 30 minutes of idle time.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Control 4: Rate Limiting Architecture -->
+        <div class="col-lg-6">
+            <div class="cyber-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-2 rounded bg-dark-subtle border border-primary-subtle text-cyan fs-4">
+                        <i class="bi bi-stopwatch-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-light mb-0">4. Rate Limiting Architecture</h5>
+                        <small class="text-secondary">Abuse Prevention &amp; Storage Backends</small>
+                    </div>
+                </div>
+                <p class="text-secondary small">
+                    Authentication endpoints are prime targets for automated credential stuffing and password spraying. We enforce a <strong>5 attempts per minute</strong> limit per client IP using <code>Flask-Limiter</code>.
+                </p>
+                <div class="small text-secondary mb-2">
+                    <strong class="text-light">Storage Backend Comparison:</strong>
+                </div>
+                <ul class="list-unstyled small text-secondary d-flex flex-column gap-1 mb-0">
+                    <li>
+                        <code>memory://</code> (Development): In-process storage. Fast, zero-setup, but lost on process restart and not shared across multi-worker WSGI processes.
+                    </li>
+                    <li>
+                        <code>redis://</code> (Production): Distributed in-memory data store. Persists rate limit counters across multiple load-balanced web servers.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Control 5: Parameterized SQL -->
+        <div class="col-lg-6">
+            <div class="cyber-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-2 rounded bg-dark-subtle border border-primary-subtle text-cyan fs-4">
+                        <i class="bi bi-database-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-light mb-0">5. Parameterized SQL Queries</h5>
+                        <small class="text-secondary">Complete SQL Injection Neutralization</small>
+                    </div>
+                </div>
+                <p class="text-secondary small">
+                    SQL injection occurs when untrusted input is concatenated directly into SQL command strings. In this lab, all queries are compiled using parameter placeholders (<code>?</code>).
+                </p>
+                <div class="cyber-code">
+# VULNERABLE (DO NOT USE):
+# cursor.execute(f"SELECT * FROM users WHERE user='{input}'")
+
+# SECURE (PARAMETERIZED):
+cursor.execute("SELECT * FROM users WHERE username = ?;", (input,))
+                </div>
+                <p class="text-secondary small mt-2 mb-0">
+                    The database driver treats parameter values strictly as literal values, never as executable SQL commands.
+                </p>
+            </div>
+        </div>
+
+        <!-- Control 6: Server-Side Input Validation -->
+        <div class="col-lg-6">
+            <div class="cyber-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-2 rounded bg-dark-subtle border border-primary-subtle text-cyan fs-4">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-light mb-0">6. Server-Side Input Validation</h5>
+                        <small class="text-secondary">Strict Whitelisting &amp; DoS Mitigation</small>
+                    </div>
+                </div>
+                <p class="text-secondary small">
+                    Client-side validation can be bypassed effortlessly with <code>curl</code>, Postman, or browser developer tools. Defensive systems mandate rigorous server-side checks.
+                </p>
+                <ul class="list-unstyled small text-secondary d-flex flex-column gap-1 mb-0">
+                    <li><strong class="text-light">Username Whitelist:</strong> <code>^[a-zA-Z0-9_]{3,30}$</code>. Blocks control characters, path traversals, and script injections.</li>
+                    <li><strong class="text-light">Password Upper Limit (128 chars):</strong> Prevents algorithmic Denial of Service (DoS) where an attacker submits megabytes of text to exhaust CPU/memory during Argon2id hashing.</li>
+                    <li><strong class="text-light">Complexity Bounds:</strong> Minimum 12 chars with upper, lower, digit, and special characters.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,144 @@
+/* ==============================================================================
+   SECURE AUTHENTICATION LAB - CYBERSECURITY DEFENSIVE THEME
+   ============================================================================== */
+
+:root {
+    --cyber-bg-dark: #070d19;
+    --cyber-card-bg: #0f1c30;
+    --cyber-card-border: #1a2f4c;
+    --cyber-cyan: #00e5ff;
+    --cyber-cyan-dim: #00b4d8;
+    --cyber-blue-accent: #3a86ff;
+    --cyber-success: #10b981;
+    --cyber-warning: #f59e0b;
+    --cyber-danger: #ef4444;
+    --cyber-code-bg: #050a14;
+}
+
+body.cyber-bg {
+    background-color: var(--cyber-bg-dark);
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(58, 134, 255, 0.04) 0%, transparent 40%);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #e2e8f0;
+}
+
+/* Navbar */
+.cyber-nav {
+    background-color: rgba(11, 21, 38, 0.95);
+    backdrop-filter: blur(10px);
+    border-color: var(--cyber-card-border) !important;
+}
+
+.text-cyan {
+    color: var(--cyber-cyan) !important;
+}
+
+.text-glow {
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+}
+
+.btn-cyan {
+    background-color: var(--cyber-cyan);
+    color: #070d19;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-cyan:hover, .btn-cyan:focus {
+    background-color: #38bdf8;
+    color: #050a14;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+}
+
+.btn-outline-cyan {
+    color: var(--cyber-cyan);
+    border-color: var(--cyber-cyan);
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-cyan:hover {
+    background-color: rgba(0, 229, 255, 0.15);
+    color: #ffffff;
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+}
+
+/* Cards */
+.cyber-card {
+    background-color: var(--cyber-card-bg);
+    border: 1px solid var(--cyber-card-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.cyber-card:hover {
+    border-color: rgba(0, 229, 255, 0.35);
+}
+
+/* Badges */
+.cyber-badge {
+    background-color: rgba(26, 47, 76, 0.7);
+    border: 1px solid var(--cyber-card-border);
+    color: #cbd5e1;
+}
+
+/* Form Controls */
+.cyber-input {
+    background-color: rgba(11, 21, 38, 0.85);
+    border: 1px solid var(--cyber-card-border);
+    color: #f8fafc;
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+}
+
+.cyber-input:focus {
+    background-color: #0d1a2d;
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 0 0 0.25rem rgba(0, 229, 255, 0.18);
+    color: #ffffff;
+}
+
+.cyber-input::placeholder {
+    color: #64748b;
+}
+
+/* Alerts */
+.cyber-alert {
+    background-color: var(--cyber-card-bg);
+    border: 1px solid var(--cyber-card-border);
+    border-radius: 8px;
+}
+
+/* Password Strength Meter */
+.strength-meter-bar {
+    height: 6px;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Code Snippet Previews */
+.cyber-code {
+    background-color: var(--cyber-code-bg);
+    border: 1px solid var(--cyber-card-border);
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.85rem;
+    color: #38bdf8;
+    overflow-x: auto;
+}
+
+/* Interactive Checklist Icons */
+.cyber-check-icon {
+    font-size: 1.25rem;
+}
+
+/* Footer */
+.cyber-footer {
+    background-color: rgba(7, 13, 25, 0.98);
+}

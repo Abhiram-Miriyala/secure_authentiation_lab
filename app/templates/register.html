@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}User Registration{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="cyber-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex p-3 rounded-circle bg-dark-subtle border border-primary-subtle text-cyan fs-3 mb-2">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-light">Register Secure Account</h3>
+                    <p class="text-secondary small">Credentials are validated server-side and protected with Argon2id</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+                    <!-- CSRF Protection Token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        <label for="register-username" class="form-label text-light small fw-bold">
+                            <i class="bi bi-person me-1 text-cyan"></i> Username
+                        </label>
+                        <input type="text" 
+                               class="form-control cyber-input" 
+                               id="register-username" 
+                               name="username" 
+                               value="{{ username or '' }}"
+                               placeholder="e.g. analyst_alice" 
+                               required 
+                               autocomplete="username">
+                        <div class="form-text text-secondary small">
+                            3-30 characters. Alphanumeric characters and underscores only.
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <label for="register-password" class="form-label text-light small fw-bold">
+                            <i class="bi bi-key me-1 text-cyan"></i> Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" 
+                                   class="form-control cyber-input" 
+                                   id="register-password" 
+                                   name="password" 
+                                   placeholder="Enter strong defensive password" 
+                                   required 
+                                   autocomplete="new-password">
+                            <button class="btn btn-outline-secondary toggle-password-btn" 
+                                    type="button" 
+                                    data-target="register-password"
+                                    aria-label="Toggle password visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+
+                        <!-- Real-time Strength Meter -->
+                        <div class="mt-2">
+                            <div class="progress" style="height: 6px; background-color: #1a2f4c;">
+                                <div id="strength-bar" class="strength-meter-bar bg-secondary" style="width: 0%;"></div>
+                            </div>
+                            <div id="strength-text" class="small text-secondary mt-1">Enter password to evaluate</div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="mb-4">
+                        <label for="confirm-password" class="form-label text-light small fw-bold">
+                            <i class="bi bi-check2-circle me-1 text-cyan"></i> Confirm Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" 
+                                   class="form-control cyber-input" 
+                                   id="confirm-password" 
+                                   name="confirm_password" 
+                                   placeholder="Re-enter password" 
+                                   required 
+                                   autocomplete="new-password">
+                            <button class="btn btn-outline-secondary toggle-password-btn" 
+                                    type="button" 
+                                    data-target="confirm-password"
+                                    aria-label="Toggle confirm password visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Password Requirements Checklist -->
+                    <div class="cyber-card p-3 mb-4 bg-dark-subtle border-secondary-subtle">
+                        <div class="fw-bold small text-light mb-2">
+                            <i class="bi bi-shield-check text-cyan me-1"></i> Defensive Complexity Criteria
+                        </div>
+                        <ul class="list-unstyled mb-0 small d-flex flex-column gap-1">
+                            <li id="rule-length" class="text-secondary">
+                                <i class="bi bi-circle me-1"></i> Minimum 12 characters (max 128)
+                            </li>
+                            <li id="rule-upper" class="text-secondary">
+                                <i class="bi bi-circle me-1"></i> At least one uppercase letter (A-Z)
+                            </li>
+                            <li id="rule-lower" class="text-secondary">
+                                <i class="bi bi-circle me-1"></i> At least one lowercase letter (a-z)
+                            </li>
+                            <li id="rule-digit" class="text-secondary">
+                                <i class="bi bi-circle me-1"></i> At least one numeric digit (0-9)
+                            </li>
+                            <li id="rule-special" class="text-secondary">
+                                <i class="bi bi-circle me-1"></i> At least one special symbol (!@#$%^&amp;*...)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-cyan w-100 py-2 fw-bold">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Complete Registration
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <span class="text-secondary small">Already have an account?</span>
+                    <a href="{{ url_for('auth.login') }}" class="text-cyan small fw-bold text-decoration-none ms-1">
+                        Log in here
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

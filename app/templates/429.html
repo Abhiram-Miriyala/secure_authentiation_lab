@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ custom_title or 'Security Event' }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="cyber-card p-4 p-md-5 text-center">
+                <div class="d-inline-flex p-3 rounded-circle bg-danger-subtle text-danger fs-1 mb-3 border border-danger-subtle">
+                    <i class="bi bi-shield-x"></i>
+                </div>
+                
+                <h3 class="fw-bold text-light mb-2">
+                    {{ custom_title or '429 - Rate Limit Exceeded' }}
+                </h3>
+                
+                <p class="text-secondary small mb-4">
+                    {{ custom_message or error or 'You have exceeded the allowable request threshold for this endpoint. Defensive rate limiting is actively protecting this service from brute-force and denial-of-service attempts.' }}
+                </p>
+
+                <div class="p-3 bg-dark-subtle rounded border border-primary-subtle text-start small mb-4">
+                    <div class="text-cyan fw-bold mb-1"><i class="bi bi-info-circle me-1"></i> Defensive Mechanism:</div>
+                    <div class="text-secondary">
+                        Requests from your IP address have triggered our dynamic threshold limiter. Please wait 60 seconds before retrying authentication.
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary px-3">
+                        <i class="bi bi-house-door me-1"></i> Home
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-cyan px-3">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Return to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
